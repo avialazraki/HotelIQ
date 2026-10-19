@@ -1,0 +1,2 @@
+Model,Threshold,Test_Bookings,Accuracy,Precision,Recall,F1_Score,ROC_AUC,True_Negatives,False_Positives,False_Negatives,True_Positives
+Random Forest,0.4,24071,0.749,0.6512,0.7326,0.6895,0.8321,11317,3594,2449,6711
