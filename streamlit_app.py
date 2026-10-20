@@ -25,6 +25,30 @@ df = load_data()
 
 st.success(f"Dataset loaded successfully: {len(df):,} bookings")
 
+
+# Cancellation Rate by Hotel Type
+st.subheader("Cancellation Rate by Hotel Type")
+
+if not df.empty:
+    hotel_cancellation = (
+        df.groupby("hotel")["is_canceled"]
+        .mean()
+        .mul(100)
+        .reset_index(name="Cancellation Rate (%)")
+    )
+
+    st.bar_chart(
+        hotel_cancellation,
+        x="hotel",
+        y="Cancellation Rate (%)",
+        y_label="Cancellation Rate (%)",
+        x_label="Hotel Type",
+        use_container_width=True
+    )
+else:
+    st.warning("No bookings match the selected filters.")
+
+
 st.subheader("Dataset Preview")
 
 # Interactive dashboard filters
