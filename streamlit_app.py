@@ -122,6 +122,41 @@ else:
     st.warning("No bookings match the selected filters.")
 
 
+# Monthly Booking Trends
+st.subheader("Monthly Booking Trends")
+
+month_order = [
+    "January", "February", "March", "April",
+    "May", "June", "July", "August",
+    "September", "October", "November", "December"
+]
+
+if not df.empty:
+    monthly_bookings = (
+        df.groupby("arrival_date_month")
+        .size()
+        .reindex(month_order, fill_value=0)
+        .reset_index(name="Bookings")
+    )
+
+    st.line_chart(
+        monthly_bookings,
+        x="arrival_date_month",
+        y="Bookings",
+        x_label="Arrival Month",
+        y_label="Number of Bookings",
+        use_container_width=True
+    )
+
+    st.caption(
+        "Booking counts by arrival month for the selected "
+        "hotel types, years, and market segments. "
+        "These are historical booking counts, not a forecast."
+    )
+else:
+    st.warning("No bookings match the selected filters.")
+
+
 st.subheader("Dataset Preview")
 
 # Interactive dashboard filters
