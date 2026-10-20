@@ -2,31 +2,82 @@
 import streamlit as st
 import pandas as pd
 
-@st.cache_data
-def load_data():
-    return pd.read_csv("data/HotelIQ_SQL_Ready.csv")
-
 st.set_page_config(
     page_title="HotelIQ | Hotel Analytics",
     page_icon="🏨",
     layout="wide"
 )
 
+# Load dataset
+@st.cache_data
+def load_data():
+    return pd.read_csv("data/HotelIQ_SQL_Ready.csv")
+
+
+df = load_data()
+
+# Introduction
 st.title("🏨 HotelIQ")
 st.subheader("Hotel Revenue, Demand & Cancellation Intelligence")
 
 st.markdown("""
-Welcome to **HotelIQ**, an interactive hotel booking analytics dashboard.
+An interactive hotel booking analytics dashboard.
 
 Explore booking trends, cancellation patterns, and
-data-driven insights to support better hotel management decisions.
+data-driven insights to support hotel management decisions.
 """)
-df = load_data()
 
-st.success(f"Dataset loaded successfully: {len(df):,} bookings")
+# Sidebar filters
+st.sidebar.header("🔎 Dashboard Filters")
 
+hotel_options = sorted(df["hotel"].dropna().unique().tolist())
+year_options = sorted(df["arrival_date_year"].dropna().unique().tolist())
+segment_options = sorted(df["market_segment"].dropna().unique().tolist())
 
-# Cancellation Rate by Hotel Type
+selected_hotels = st.sidebar.multiselect(
+    "Hotel Type", hotel_options, default=hotel_options
+)
+
+selected_years = st.sidebar.multiselect(
+    "Arrival Year", year_options, default=year_options
+)
+
+selected_segments = st.sidebar.multiselect(
+    "Market Segment", segment_options, default=segment_options
+)
+
+df = df[
+    df["hotel"].isin(selected_hotels)
+    & df["arrival_date_year"].isin(selected_years)
+    & df["market_segment"].isin(selected_segments)
+].copy()
+
+# Executive Overview
+st.header("📊 Executive Overview")
+
+total_bookings = len(df)
+total_cancellations = int(df["is_canceled"].sum())
+cancellation_rate = (
+    total_cancellations / total_bookings * 100
+    if total_bookings else 0
+)
+estimated_booking_value = df["estimated_booking_value"].sum()
+
+col1, col2, col3, col4 = st.columns(4)
+
+col1.metric("Total Bookings", f"{total_bookings:,}")
+col2.metric("Cancellations", f"{total_cancellations:,}")
+col3.metric("Cancellation Rate", f"{cancellation_rate:.2f}%")
+col4.metric(
+    "Estimated Booking Value",
+    f"{estimated_booking_value / 1_000_000:,.2f}M"
+)
+
+st.caption(
+    "Estimated booking value is not confirmed collected revenue."
+)
+
+# Cancellation by Hotel Type
 st.subheader("Cancellation Rate by Hotel Type")
 
 if not df.empty:
@@ -40,24 +91,15 @@ if not df.empty:
     st.bar_chart(
         hotel_cancellation,
         x="hotel",
-        y="Cancellation Rate (%)",
-        y_label="Cancellation Rate (%)",
-        x_label="Hotel Type",
-        use_container_width=True
+        y="Cancellation Rate (%)"
     )
-else:
-    st.warning("No bookings match the selected filters.")
 
-
-# Cancellation Rate by Lead Time
+# Cancellation by Lead Time
 st.subheader("Cancellation Rate by Lead Time")
 
 lead_time_order = [
-    "0-7 days",
-    "8-30 days",
-    "31-90 days",
-    "91-180 days",
-    "181+ days"
+    "0-7 days", "8-30 days", "31-90 days",
+    "91-180 days", "181+ days"
 ]
 
 if not df.empty:
@@ -70,57 +112,29 @@ if not df.empty:
         .reset_index(name="Cancellation Rate (%)")
     )
 
-    if not lead_time_cancellation.empty:
-        st.bar_chart(
-            lead_time_cancellation,
-            x="lead_time_group",
-            y="Cancellation Rate (%)",
-            x_label="Lead Time",
-            y_label="Cancellation Rate (%)",
-            use_container_width=True
-        )
-    else:
-        st.info("No matching lead-time groups found.")
-else:
-    st.warning("No bookings match the selected filters.")
+    st.bar_chart(
+        lead_time_cancellation,
+        x="lead_time_group",
+        y="Cancellation Rate (%)"
+    )
 
-
-# Cancellation Rate by Market Segment
+# Cancellation by Market Segment
 st.subheader("Cancellation Rate by Market Segment")
 
 if not df.empty:
     segment_cancellation = (
-        df.groupby("market_segment")
-        .agg(
-            Bookings=("is_canceled", "size"),
-            Cancellation_Rate=("is_canceled", "mean")
-        )
-        .reset_index()
-    )
-
-    segment_cancellation["Cancellation_Rate"] *= 100
-
-    segment_cancellation = segment_cancellation.sort_values(
-        "Cancellation_Rate",
-        ascending=False
+        df.groupby("market_segment")["is_canceled"]
+        .mean()
+        .mul(100)
+        .reset_index(name="Cancellation Rate (%)")
+        .sort_values("Cancellation Rate (%)", ascending=False)
     )
 
     st.bar_chart(
         segment_cancellation,
         x="market_segment",
-        y="Cancellation_Rate",
-        x_label="Market Segment",
-        y_label="Cancellation Rate (%)",
-        use_container_width=True
+        y="Cancellation Rate (%)"
     )
-
-    st.caption(
-        "Cancellation rates are calculated for the selected "
-        "hotel types, years, and market segments."
-    )
-else:
-    st.warning("No bookings match the selected filters.")
-
 
 # Monthly Booking Trends
 st.subheader("Monthly Booking Trends")
@@ -142,128 +156,34 @@ if not df.empty:
     st.line_chart(
         monthly_bookings,
         x="arrival_date_month",
-        y="Bookings",
-        x_label="Arrival Month",
-        y_label="Number of Bookings",
-        use_container_width=True
+        y="Bookings"
     )
-
-    st.caption(
-        "Booking counts by arrival month for the selected "
-        "hotel types, years, and market segments. "
-        "These are historical booking counts, not a forecast."
-    )
-else:
-    st.warning("No bookings match the selected filters.")
-
 
 # Machine Learning Insights
 st.header("🤖 Machine Learning Insights")
 
 st.write(
-    "HotelIQ uses a Random Forest classification model "
-    "to identify patterns associated with booking cancellations."
-)
-
-st.caption(
-    "The metrics below come from the original HotelIQ "
-    "held-out test evaluation. They are not recalculated "
-    "when dashboard filters change."
+    "Random Forest classification model for identifying "
+    "patterns associated with hotel booking cancellations."
 )
 
 ml1, ml2, ml3, ml4, ml5 = st.columns(5)
 
-with ml1:
-    st.metric("Accuracy", "74.90%")
-
-with ml2:
-    st.metric("Precision", "65.12%")
-
-with ml3:
-    st.metric("Recall", "73.26%")
-
-with ml4:
-    st.metric("F1 Score", "68.95%")
-
-with ml5:
-    st.metric("ROC-AUC", "0.8321")
-
-st.info(
-    "These are historical model evaluation results, "
-    "not live predictions for individual bookings."
-)
-
-
-st.subheader("Dataset Preview")
-
-# Interactive dashboard filters
-st.sidebar.header("🔎 Dashboard Filters")
-
-hotel_options = sorted(df["hotel"].dropna().unique().tolist())
-year_options = sorted(df["arrival_date_year"].dropna().unique().tolist())
-segment_options = sorted(df["market_segment"].dropna().unique().tolist())
-
-selected_hotels = st.sidebar.multiselect(
-    "Hotel Type",
-    hotel_options,
-    default=hotel_options
-)
-
-selected_years = st.sidebar.multiselect(
-    "Arrival Year",
-    year_options,
-    default=year_options
-)
-
-selected_segments = st.sidebar.multiselect(
-    "Market Segment",
-    segment_options,
-    default=segment_options
-)
-
-df = df[
-    df["hotel"].isin(selected_hotels)
-    & df["arrival_date_year"].isin(selected_years)
-    & df["market_segment"].isin(selected_segments)
-].copy()
-
-# HotelIQ Executive Overview KPIs
-st.header("📊 Executive Overview")
-
-total_bookings = len(df)
-total_cancellations = int(df["is_canceled"].sum())
-
-cancellation_rate = (
-    total_cancellations / total_bookings * 100
-    if total_bookings > 0 else 0
-)
-
-estimated_booking_value = df["estimated_booking_value"].sum()
-
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
-    st.metric("Total Bookings", f"{total_bookings:,}")
-
-with col2:
-    st.metric("Cancellations", f"{total_cancellations:,}")
-
-with col3:
-    st.metric("Cancellation Rate", f"{cancellation_rate:.2f}%")
-
-with col4:
-    st.metric(
-        "Estimated Booking Value",
-        f"{estimated_booking_value / 1_000_000:,.2f}M"
-    )
+ml1.metric("Accuracy", "74.90%")
+ml2.metric("Precision", "65.12%")
+ml3.metric("Recall", "73.26%")
+ml4.metric("F1 Score", "68.95%")
+ml5.metric("ROC-AUC", "0.8321")
 
 st.caption(
-    "Estimated booking value is calculated from booking data "
-    "and does not represent confirmed collected revenue."
+    "Historical held-out test results from the original "
+    "HotelIQ model. These metrics do not change with filters."
 )
 
-st.dataframe(df.head(10), use_container_width=True)
+# Dataset Preview
+with st.expander("📋 Explore the Dataset"):
+    st.write(f"Showing 10 of {len(df):,} filtered bookings")
+    st.dataframe(df.head(10), use_container_width=True)
 
-st.subheader("Available Dataset Columns")
-st.write(df.columns.tolist())
-
+if df.empty:
+    st.warning("No bookings match the selected filters.")
