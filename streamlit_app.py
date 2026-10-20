@@ -26,6 +26,42 @@ df = load_data()
 st.success(f"Dataset loaded successfully: {len(df):,} bookings")
 
 st.subheader("Dataset Preview")
+
+# HotelIQ Executive Overview KPIs
+st.header("📊 Executive Overview")
+
+total_bookings = len(df)
+total_cancellations = int(df["is_canceled"].sum())
+
+cancellation_rate = (
+    total_cancellations / total_bookings * 100
+    if total_bookings > 0 else 0
+)
+
+estimated_booking_value = df["estimated_booking_value"].sum()
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.metric("Total Bookings", f"{total_bookings:,}")
+
+with col2:
+    st.metric("Cancellations", f"{total_cancellations:,}")
+
+with col3:
+    st.metric("Cancellation Rate", f"{cancellation_rate:.2f}%")
+
+with col4:
+    st.metric(
+        "Estimated Booking Value",
+        f"{estimated_booking_value / 1_000_000:,.2f}M"
+    )
+
+st.caption(
+    "Estimated booking value is calculated from booking data "
+    "and does not represent confirmed collected revenue."
+)
+
 st.dataframe(df.head(10), use_container_width=True)
 
 st.subheader("Available Dataset Columns")
