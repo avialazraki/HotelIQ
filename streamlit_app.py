@@ -85,6 +85,43 @@ else:
     st.warning("No bookings match the selected filters.")
 
 
+# Cancellation Rate by Market Segment
+st.subheader("Cancellation Rate by Market Segment")
+
+if not df.empty:
+    segment_cancellation = (
+        df.groupby("market_segment")
+        .agg(
+            Bookings=("is_canceled", "size"),
+            Cancellation_Rate=("is_canceled", "mean")
+        )
+        .reset_index()
+    )
+
+    segment_cancellation["Cancellation_Rate"] *= 100
+
+    segment_cancellation = segment_cancellation.sort_values(
+        "Cancellation_Rate",
+        ascending=False
+    )
+
+    st.bar_chart(
+        segment_cancellation,
+        x="market_segment",
+        y="Cancellation_Rate",
+        x_label="Market Segment",
+        y_label="Cancellation Rate (%)",
+        use_container_width=True
+    )
+
+    st.caption(
+        "Cancellation rates are calculated for the selected "
+        "hotel types, years, and market segments."
+    )
+else:
+    st.warning("No bookings match the selected filters.")
+
+
 st.subheader("Dataset Preview")
 
 # Interactive dashboard filters
