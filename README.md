@@ -176,6 +176,29 @@ Feature importance indicates model reliance, not proof that a feature causes can
 - [Final Model Metrics](data/HotelIQ_Final_Model_Metrics.csv)
 - [Feature Importance](data/HotelIQ_Feature_Importance.csv)
 
+## 🧪 Statistical Hypothesis Testing
+
+A Chi-square test of independence was performed using SciPy to examine the association between market segment (Groups versus Direct) and booking cancellation.
+
+**Hypotheses:**
+- **H₀ (Null hypothesis):** Market segment and cancellation status are independent.
+- **H₁ (Alternative hypothesis):** Market segment and cancellation status are associated.
+
+**Test results:**
+
+| Metric | Result |
+|---|---:|
+| Chi-square statistic | 6,487.09 |
+| P-value | < 0.001 |
+| Degrees of freedom | 1 |
+| Significance level (α) | 0.05 |
+
+**Conclusion:** The null hypothesis was rejected. The results indicate a statistically significant association between market segment and booking cancellation in the analyzed data.
+
+This finding demonstrates an association, not a causal relationship.
+
+**Implementation:** [HotelIQ Data Analysis Notebook](notebooks/HotelIQ_Data_Analysis.ipynb)
+
 ## 🗄️ SQL Analysis
 
 The cleaned dataset was imported into PostgreSQL 18.
