@@ -59,6 +59,7 @@ This project uses a modified version of the dataset. Cleaning, feature engineeri
 | Scikit-learn | Logistic Regression and Random Forest |
 | PostgreSQL 18 | SQL analysis and database views |
 | Power BI | Interactive business intelligence dashboard |
+| Streamlit | Public interactive web dashboard with dynamic filters, KPIs, and charts |
 | Google Colab | Python notebook development |
 | GitHub | Project documentation and version control |
 
