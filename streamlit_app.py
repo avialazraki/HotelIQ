@@ -49,6 +49,42 @@ else:
     st.warning("No bookings match the selected filters.")
 
 
+# Cancellation Rate by Lead Time
+st.subheader("Cancellation Rate by Lead Time")
+
+lead_time_order = [
+    "0-7 days",
+    "8-30 days",
+    "31-90 days",
+    "91-180 days",
+    "181+ days"
+]
+
+if not df.empty:
+    lead_time_cancellation = (
+        df.groupby("lead_time_group")["is_canceled"]
+        .mean()
+        .mul(100)
+        .reindex(lead_time_order)
+        .dropna()
+        .reset_index(name="Cancellation Rate (%)")
+    )
+
+    if not lead_time_cancellation.empty:
+        st.bar_chart(
+            lead_time_cancellation,
+            x="lead_time_group",
+            y="Cancellation Rate (%)",
+            x_label="Lead Time",
+            y_label="Cancellation Rate (%)",
+            use_container_width=True
+        )
+    else:
+        st.info("No matching lead-time groups found.")
+else:
+    st.warning("No bookings match the selected filters.")
+
+
 st.subheader("Dataset Preview")
 
 # Interactive dashboard filters
