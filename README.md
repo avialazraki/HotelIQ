@@ -195,6 +195,7 @@ Available SQL scripts:
 ```text
 HotelIQ/
 ├── README.md
+├── streamlit_app.py
 ├── notebooks/
 │   ├── README.md
 │   └── HotelIQ_Data_Analysis.ipynb
