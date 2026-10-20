@@ -157,6 +157,43 @@ else:
     st.warning("No bookings match the selected filters.")
 
 
+# Machine Learning Insights
+st.header("🤖 Machine Learning Insights")
+
+st.write(
+    "HotelIQ uses a Random Forest classification model "
+    "to identify patterns associated with booking cancellations."
+)
+
+st.caption(
+    "The metrics below come from the original HotelIQ "
+    "held-out test evaluation. They are not recalculated "
+    "when dashboard filters change."
+)
+
+ml1, ml2, ml3, ml4, ml5 = st.columns(5)
+
+with ml1:
+    st.metric("Accuracy", "74.90%")
+
+with ml2:
+    st.metric("Precision", "65.12%")
+
+with ml3:
+    st.metric("Recall", "73.26%")
+
+with ml4:
+    st.metric("F1 Score", "68.95%")
+
+with ml5:
+    st.metric("ROC-AUC", "0.8321")
+
+st.info(
+    "These are historical model evaluation results, "
+    "not live predictions for individual bookings."
+)
+
+
 st.subheader("Dataset Preview")
 
 # Interactive dashboard filters
