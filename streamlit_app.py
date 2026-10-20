@@ -27,3 +27,7 @@ st.success(f"Dataset loaded successfully: {len(df):,} bookings")
 
 st.subheader("Dataset Preview")
 st.dataframe(df.head(10), use_container_width=True)
+
+st.subheader("Available Dataset Columns")
+st.write(df.columns.tolist())
+
