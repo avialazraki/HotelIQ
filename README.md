@@ -3,6 +3,15 @@
 
 **An end-to-end hotel booking analytics project combining Python, PostgreSQL, Power BI, and machine learning to uncover cancellation patterns, understand booking demand, and support data-driven hotel management decisions.**
 
+## 🌐 Live Interactive Dashboard
+
+[**Launch HotelIQ Interactive Dashboard**](https://hoteliq-analytics.streamlit.app/)
+
+Explore hotel booking trends, cancellation rates, market segments, and machine learning evaluation results through interactive filters.
+
+**Online Dashboard:** Streamlit Community Cloud  
+**Original BI Dashboard:** Microsoft Power BI
+
 ## 📌 Project Overview
 
 Hotel booking cancellations can create operational uncertainty, disrupt occupancy planning, and affect potential revenue.
