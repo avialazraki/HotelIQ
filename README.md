@@ -190,6 +190,38 @@ Available SQL scripts:
 - [Hotel Performance View](sql/HotelIQ_Hotel_Performance.sql)
 - [Monthly Cancellations View](sql/HotelIQ_Monthly_Cancellations.sql)
 
+## 🗄️ SQL Analysis
+
+The cleaned dataset was imported into PostgreSQL 18.
+
+**Database:** `hoteliq_db`  
+**Table:** `public.bookings`
+
+SQL analysis included booking volumes, cancellation rates, hotel performance, monthly cancellation trends, and database views.
+
+### Advanced SQL Analysis
+
+An advanced SQL query was developed and successfully tested in PostgreSQL, demonstrating:
+
+- CROSS JOIN and subqueries
+- GROUP BY and aggregate functions
+- Cancellation rate comparisons across hotel types
+
+**Verified SQL results:**
+
+| Hotel type | Total bookings | Canceled bookings | Cancellation rate |
+|---|---:|---:|---:|
+| City Hotel | 78,899 | 33,066 | 41.91% |
+| Resort Hotel | 39,665 | 11,110 | 28.01% |
+
+**Overall cancellation rate:** 37.26%
+
+### Available SQL Scripts
+
+- [Hotel Performance View](sql/HotelIQ_Hotel_Performance.sql)
+- [Monthly Cancellations View](sql/HotelIQ_Monthly_Cancellations.sql)
+- [Advanced SQL Analysis](sql/HotelIQ_Advanced_Analysis.sql)
+
 ## 📁 Repository Structure
 
 ```text
@@ -202,7 +234,8 @@ HotelIQ/
 ├── sql/
 │   ├── README.md
 │   ├── HotelIQ_Hotel_Performance.sql
-│   └── HotelIQ_Monthly_Cancellations.sql
+│   ├── HotelIQ_Monthly_Cancellations.sql
+│   └── HotelIQ_Advanced_Analysis.sql
 ├── dashboard/
 │   ├── README.md
 │   └── HotelIQ_Interactive_Dashboard.pbix
