@@ -334,3 +334,38 @@ Model predictions should support human decisions, not automatically determine cu
 HotelIQ demonstrates an end-to-end analytics workflow: transforming raw hotel booking data into SQL-ready records, extracting business insights, building an interactive dashboard, and evaluating a machine-learning model for cancellation prediction.
 
 The project is intended as a **data analytics and business intelligence portfolio project**.
+
+
+## Historical Weather API Integration
+
+To demonstrate external data collection, API integration, JSON handling, and data manipulation with Python, HotelIQ includes a supplementary historical weather dataset.
+
+### Data Source
+- **Provider:** Open-Meteo Historical Weather API
+- **Location:** Lisbon, Portugal (approximate coordinates: 38.72, -9.14)
+- **Period:** July 1, 2015 – August 31, 2017
+- **Records:** 793 daily observations
+- **Variables:** Maximum temperature, minimum temperature, and total precipitation
+
+### Data Collection Process
+1. Connected to the Open-Meteo API using Python's `requests` library.
+2. Retrieved historical weather data in JSON format.
+3. Converted the daily observations into a Pandas DataFrame.
+4. Converted dates to datetime format.
+5. Validated the dataset for missing values and duplicate dates.
+6. Exported the results to CSV.
+
+### Data Quality
+- 793 rows and 4 columns
+- No missing values
+- No duplicate dates
+
+### Project Files
+- [Weather API Python Notebook](notebooks/HotelIQ_Weather_API.ipynb)
+- [Historical Weather CSV](data/HotelIQ_Lisbon_Weather.csv)
+
+### Scope and Limitations
+The weather dataset is a supplementary demonstration of API-based data collection. Lisbon is used as a representative location, not as a verified location for the hotels in the booking dataset.
+
+Weather data has not been incorporated into the existing cancellation prediction model. No causal relationship between weather and booking cancellations is claimed.
+
