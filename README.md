@@ -176,6 +176,32 @@ Feature importance indicates model reliance, not proof that a feature causes can
 - [Final Model Metrics](data/HotelIQ_Final_Model_Metrics.csv)
 - [Feature Importance](data/HotelIQ_Feature_Importance.csv)
 
+### Random Forest Hyperparameter Tuning
+
+Automated hyperparameter tuning was performed using Scikit-learn's `RandomizedSearchCV` with `StratifiedGroupKFold` cross-validation.
+
+The experiment evaluated 5 hyperparameter combinations across 3 folds, totaling 15 model fits. Group-aware cross-validation was used to reduce overlap between training and validation folds.
+
+**Best hyperparameters:**
+
+| Parameter | Selected value |
+|---|---:|
+| `n_estimators` | 100 |
+| `max_depth` | 12 |
+| `min_samples_leaf` | 5 |
+
+**Evaluation results:**
+
+| Metric | ROC-AUC |
+|---|---:|
+| Best cross-validation score | 0.8229 |
+| Original model validation score | 0.8083 |
+| Tuned model validation score | 0.8083 |
+
+The tuning experiment selected the same hyperparameters as the original Random Forest model. Validation performance was identical, so the existing final model and published test results were retained.
+
+**Implementation:** [HotelIQ Data Analysis Notebook](notebooks/HotelIQ_Data_Analysis.ipynb)
+
 ## 🧪 Statistical Hypothesis Testing
 
 A Chi-square test of independence was performed using SciPy to examine the association between market segment (Groups versus Direct) and booking cancellation.
