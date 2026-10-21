@@ -369,3 +369,22 @@ The weather dataset is a supplementary demonstration of API-based data collectio
 
 Weather data has not been incorporated into the existing cancellation prediction model. No causal relationship between weather and booking cancellations is claimed.
 
+### Weather vs. Hotel Cancellation Analysis
+
+To investigate whether weather conditions are associated with hotel cancellations, HotelIQ combined 119,390 original hotel booking records with 793 days of historical Lisbon weather data retrieved through the Open-Meteo API.
+
+Bookings were matched to historical weather using their scheduled arrival dates.
+
+**Key findings:**
+
+- **Rainfall:** Cancellation rates were nearly identical for dry arrival dates (37.07%) and rainy arrival dates (36.97%).
+- **City Hotel:** The daily correlation between maximum temperature and cancellation rate decreased from +0.1600 to -0.0249 after adjusting for calendar month.
+- **Resort Hotel:** The corresponding correlation decreased from +0.3752 to +0.0843 after month adjustment.
+- **Seasonality:** Much of the apparent temperature–cancellation relationship was associated with seasonal patterns rather than temperature alone.
+
+**Business insight:** Seasonal booking behavior appears more informative than arrival-date weather alone for understanding cancellation patterns. Hotel managers should consider seasonality alongside booking lead time, market segment, and hotel type.
+
+**Limitations:** Lisbon weather serves as a geographic proxy, not verified weather at each hotel's location. Weather on the scheduled arrival date may occur after a cancellation decision. This exploratory analysis uses the original 119,390 bookings rather than the 118,564-record cleaned dataset used elsewhere in HotelIQ. The month-adjusted correlations do not establish causation or predictive usefulness.
+
+**Analysis notebook:** [HotelIQ_Data_Analysis.ipynb](notebooks/HotelIQ_Data_Analysis.ipynb)
+
